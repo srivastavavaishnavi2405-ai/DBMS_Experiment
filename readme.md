@@ -1,6 +1,6 @@
 # DBMS Experiments
 
-This repository contains six database management lab experiments as PDF records. The PDFs include handwritten SQL, query examples, and expected or observed outputs. Experiments 1 and 2 are scanned handwritten pages; Experiments 3–6 are digitally prepared lab records.
+This repository contains six database management lab experiments. The PDFs preserve the lab records, and `sql/` contains standalone MySQL 8 scripts for Experiments 3–6. Experiments 1 and 2 are scanned handwritten pages; Experiments 3–6 are digitally prepared PDFs with matching runnable scripts.
 
 ## Files
 
@@ -12,6 +12,10 @@ This repository contains six database management lab experiments as PDF records.
 | [`Experiment 4.pdf`](Experiment%204.pdf) | 4 | Joins, subqueries, set-operation patterns, and `EXPLAIN` |
 | [`Experiment 5.pdf`](Experiment%205.pdf) | 5 | Views, view updatability, and recursive CTEs |
 | [`Experiment 6.pdf`](Experiment%206.pdf) | 6 | Stored procedure validation, triggers, and audit logging |
+| [`sql/experiment3.sql`](sql/experiment3.sql) | 3 | Runnable SQL source for Experiment 3 |
+| [`sql/experiment4.sql`](sql/experiment4.sql) | 4 | Runnable SQL source for Experiment 4 |
+| [`sql/experiment5.sql`](sql/experiment5.sql) | 5 | Runnable SQL source for Experiment 5 |
+| [`sql/experiment6.sql`](sql/experiment6.sql) | 6 | Runnable SQL source for Experiment 6 |
 
 ## Experiment details
 
@@ -29,30 +33,36 @@ Converts the e-commerce ER design to relational tables and implements them in My
 
 ### Experiment 3 — Employee, department, and project queries
 
-Creates and populates an Employee–Department–Project schema, including 30 employee records. The SQL practice covers selection, projection, aggregate functions (`COUNT`, `AVG`, `MAX`), `GROUP BY`, `HAVING`, `CASE` salary bands, and `ORDER BY`.
+Creates and populates `Department`, `Project`, and `Employee` tables with five departments, four projects, and 30 employees. The script uses database `dbms_exp3` and demonstrates selection, projection, aggregate functions (`COUNT`, `AVG`, `MAX`), `GROUP BY`, `HAVING`, `CASE` salary bands, and `ORDER BY`.
 
-**Related file:** [`Experiment 3.pdf`](Experiment%203.pdf)
+**Related files:** [`Experiment 3.pdf`](Experiment%203.pdf) · [`sql/experiment3.sql`](sql/experiment3.sql)
 
 ### Experiment 4 — Joins, subqueries, set patterns, and execution plans
 
-Builds Department, Project, and Employee tables and demonstrates inner, left, self, and three-way joins; a correlated subquery; `EXISTS`; simulated `INTERSECT` and `EXCEPT` queries; and query-plan inspection with `EXPLAIN`. The record also compares the inner-join and correlated-subquery approaches.
+Builds `Department`, `Project`, and `Employee` tables in `dbms_exp4`. The script demonstrates inner, left, self, and three-way joins; a correlated subquery; `EXISTS`; simulated `INTERSECT` and `EXCEPT` patterns; and query-plan inspection with `EXPLAIN`. The simulated `EXCEPT` uses `NOT EXISTS` for MySQL compatibility.
 
-**Related file:** [`Experiment 4.pdf`](Experiment%204.pdf)
+**Related files:** [`Experiment 4.pdf`](Experiment%204.pdf) · [`sql/experiment4.sql`](sql/experiment4.sql)
 
 ### Experiment 5 — Views and recursive reporting chains
 
-Creates a department salary summary view and an employee hierarchy view. It tests why aggregate/grouped and self-join views are not directly updatable, then uses a recursive CTE to traverse employee-manager reporting chains and show hierarchy levels.
+Creates `Department` and `Employee` tables in `dbms_exp5`, including `ManagerID` links. It defines a department salary summary view and an employee hierarchy view, shows the aggregate/grouped and self-join updates as commented examples (they are expected to fail), and runs a recursive CTE to return employee reporting paths and hierarchy levels.
 
-**Related file:** [`Experiment 5.pdf`](Experiment%205.pdf)
+**Related files:** [`Experiment 5.pdf`](Experiment%205.pdf) · [`sql/experiment5.sql`](sql/experiment5.sql)
 
 ### Experiment 6 — Stored procedure, validation triggers, and audit log
 
-Creates and tests a `transfer_employee(emp_id, new_dept_id)` procedure with validation and error handling. Triggers validate salary updates and log salary changes to an audit table. The PDF includes valid and invalid transfer cases, salary updates, zero/negative salary cases, invalid IDs, and same-department transfer testing.
+Creates `Department`, `Employee`, and `SalaryAudit` tables in `dbms_exp6`. The `transfer_employee(emp_id, new_dept_id)` procedure validates employee and department IDs. Triggers reject salary updates at or below zero and log valid salary changes. Invalid-input examples are commented so they do not stop the script; uncomment and run them individually to observe the errors.
 
-**Related file:** [`Experiment 6.pdf`](Experiment%206.pdf)
+**Related files:** [`Experiment 6.pdf`](Experiment%206.pdf) · [`sql/experiment6.sql`](sql/experiment6.sql)
 
 ## Suggested study order
 
-The experiments progress from conceptual design (1), to relational implementation and constraints (2), to SQL queries and joins (3–4), then views and hierarchical queries (5), and stored procedures and triggers (6). Each experiment is a PDF record; there are no separate `.sql` files in this repository, so code must be copied or transcribed from the corresponding PDF to execute it.
+The experiments progress from conceptual design (1), to relational implementation and constraints (2), to SQL queries and joins (3–4), then views and hierarchical queries (5), and stored procedures and triggers (6). The Experiment 1 and 2 records remain PDF-only; their SQL must be transcribed from the scans if you want to run it.
 
-The SQL examples target MySQL-style syntax. Review each PDF for its full statements, table definitions, and results before running them, and use a separate practice database when experimenting with updates or triggers.
+The SQL scripts target MySQL 8. Each script creates and selects its own database (`dbms_exp3`, `dbms_exp4`, `dbms_exp5`, or `dbms_exp6`) and includes the tables and sample data needed for that experiment. Run one script at a time from the repository root, for example:
+
+```sh
+mysql < sql/experiment3.sql
+```
+
+Use `experiment4.sql`, `experiment5.sql`, or `experiment6.sql` to run another practical. The scripts are intended for a clean first run: they create tables and insert fixed sample rows, so to rerun one, drop its corresponding `dbms_expN` database first. The scripts contain executable sample implementations based on the PDF exercises; review the PDFs for the original lab record and expected results. The Experiment 5 salary-summary views and Experiment 6 procedure/triggers modify data, so use the included practice databases.
